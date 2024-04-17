@@ -96,7 +96,13 @@ body {
 }
 
 .image-upload {
-  /* https://kovart.github.io/dashed-border-generator/ */
+  /*
+Docs - https://kovart.github.io/dashed-border-generator/ 
+stroke='%230E00FF' - correct
+stroke='%0E00FF' - not correcrt
+stroke='0E00FF' - not correcrt
+So just add your HEX after %23
+*/
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23FE0E00FF' stroke-width='4' stroke-dasharray='9%25%2c 10%25' stroke-dashoffset='6' stroke-linecap='butt'/%3e%3c/svg%3e");
 }
 

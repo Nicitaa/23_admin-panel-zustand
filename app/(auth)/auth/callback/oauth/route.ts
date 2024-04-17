@@ -44,6 +44,7 @@ export async function GET(request: Request) {
         avatar_url: avatarUrl,
         providers: [provider!],
       })
+
       // If row already exist - do 4 and 5
       if (is_row_exist) {
         // 4. If provider_response !=== provider - add one more provider

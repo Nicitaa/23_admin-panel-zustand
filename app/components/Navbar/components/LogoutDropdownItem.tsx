@@ -17,5 +17,6 @@ export default function LogoutDropdownItem() {
     userStore.logoutUser()
     router.refresh()
   }
+
   return <DropdownItem label="Logout" icon={BiLogOut} onClick={logout} />
 }

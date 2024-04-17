@@ -1,10 +1,12 @@
 "use client"
+
+import Link from "next/link"
+import Image from "next/image"
+import { twMerge } from "tailwind-merge"
+
 import useTicket from "@/hooks/support/useTicket"
 import useSender from "@/hooks/ui/useSender"
 import { ITicket } from "@/interfaces/support/ITicket"
-import Image from "next/image"
-import Link from "next/link"
-import { twMerge } from "tailwind-merge"
 
 interface DesktopSidebarTicketProps {
   ticket: ITicket
