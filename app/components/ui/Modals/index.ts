@@ -1,7 +1,0 @@
-export { CartModal } from "./CartModal/CartModal"
-export { ChangeLanguageModal } from "./ChangeLanguageModal"
-export { AdminPanelModal } from "./AdminPanel/AdminPanelModal"
-export { DoYouWantRecieveCheckModal } from "./DoYouWantRecieveCheckModal"
-export { AreYouSureClearCartModal } from "./AreYouSureClearCartModal"
-export { AreYouSureDeleteProductModal } from "./AreYouSureDeleteProductModal"
-export { AreYouSureMarkTicketAsCompletedSupportModal } from "./AreYouSureMarkTicketAsCompletedSupportModal"
