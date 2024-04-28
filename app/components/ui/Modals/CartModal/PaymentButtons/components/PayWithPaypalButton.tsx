@@ -41,12 +41,15 @@ export function PayWithPaypalButton() {
           10000,
         )
       } else {
-        const payPalResponse = await axios.post("/api/create-paypal-session", {
-          payPalProductsQuery,
-          email: userStore.email,
-        } as TPayPalProductsQuery)
+        console.log(44, "payPalProductsQuery - ", payPalProductsQuery)
+        console.log(45, "email - ", userStore.email)
+        // const payPalResponse = await axios.post("/api/create-paypal-session", {
+        //   payPalProductsQuery,
+        //   email: userStore.email,
+        // } as TPayPalProductsQuery)
+
         //redirect user to session.url on client side to avoid 'blocked by CORS' error
-        router.push(payPalResponse.data)
+        // router.push(payPalResponse.data)
       }
     } catch (error) {
       if (error instanceof AxiosError) {
