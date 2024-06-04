@@ -2,6 +2,12 @@
 
 [![23-store-overview](https://i.imgur.com/F9FiGHK.jpg)](https://streamable.com/1zdhl7)
 
+<br/>
+
+<br/>
+
+<br/>
+
 ## Project info
 
 ### Performance - 35 mobile / 73 desktop (01.03.2024)
@@ -15,7 +21,9 @@
 ### Stack - Next + TypeScript + Tailwind + supabase + zustand + stripe
 
 <br/>
+
 <br/>
+
 <br/>
 
 # Clone repository
@@ -38,7 +46,9 @@ pnpm i
 ```
 
 <br/>
+
 <br/>
+
 <br/>
 
 ## Step 2 - setup .env (variant 1 - dockerized)
@@ -479,7 +489,9 @@ pnpm dev
 ```
 
 <br/>
+
 <br/>
+
 <br/>
 
 # Feedback
