@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 
 export const useIsActiveTab = () => {
-  const isActiveRef = useRef<boolean>(document.visibilityState === "visible" && document.hasFocus())
+  const isActiveRef = useRef<boolean>(false)
   const [trigger, setTrigger] = useState(false) // Used only to trigger re-renders
-  // don't remove line above because it will not work as expected
 
   // Function to update the isActive state
   const updateIsActiveState = (isActive: boolean) => {
@@ -15,6 +14,11 @@ export const useIsActiveTab = () => {
   }
 
   useEffect(() => {
+    if (typeof document === "undefined") return
+
+    // Initial state check
+    isActiveRef.current = document.visibilityState === "visible" && document.hasFocus()
+
     // Handlers that update the active state
     const handleVisibilityChange = () => {
       updateIsActiveState(document.visibilityState === "visible" && document.hasFocus())

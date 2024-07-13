@@ -4,13 +4,13 @@ import { useEffect, useState } from "react"
 import { find } from "lodash"
 
 import { ITicket } from "@/interfaces/support/ITicket"
-import { pusherClient } from "@/libs/pusher"
 import { DesktopSidebarTicket } from "./DesktopSidebarTicket"
 import { NoTicketsFound } from "./NoTicketsFound"
 import { UnseenMessages } from "@/actions/getUnreadMessages"
 import { useUnseenMessages } from "../../../store/useUnseenMessages"
 import { useRouter } from "next/navigation"
 import useToast from "@/store/ui/useToast"
+import { getPusherClient } from "@/libs/pusher"
 
 interface DesktopSidebarProps {
   initialTickets: ITicket[]
@@ -33,7 +33,7 @@ export function DesktopSidebar({ initialTickets, unseenMessages }: DesktopSideba
   // TODO - go to /support/tickets on esc
 
   useEffect(() => {
-    pusherClient.subscribe("tickets")
+    const pusherClient = getPusherClient()
 
     const openHandler = (ticket: ITicket) => {
       setTickets(current => {

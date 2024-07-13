@@ -42,7 +42,7 @@ export function ModalsQueryProvider({ ownerProducts }: { ownerProducts: TProduct
             case "AdminPanel":
               return <AdminPanelModal key={modal} label="Admin Panel" ownerProducts={ownerProducts} />
             case "AuthModal":
-              return <AuthModal key={modal} label="Auth" />
+              return <AuthModal key={modal} />
             case "ChangeLanguage":
               return <ChangeLanguageModal key={modal} label="Change language" />
             case "CartModal":
