@@ -9,14 +9,12 @@ import useUserStore from "@/store/user/userStore"
 import { MessageBox } from "../components/MessageBox"
 import { MessageInput } from "../../ui/Inputs/MessageInput"
 import { IFormDataMessage } from "@/interfaces/support/IFormDataMessage"
-import { sendMessage } from "@/functions/sendMessage"
 import { getAnonymousId } from "@/functions/getAnonymousId"
 import { useLoadInitialMessages } from "@/hooks/ui/supportButton/useLoadInitialMessages"
 import { useMarkMessagesAsSeen } from "@/hooks/ui/supportButton/useMarkMessagesAsSeen"
 import { useScrollToBottom } from "@/hooks/ui/supportButton/useScrollToBottom"
 import useSupportDropdownClose from "@/hooks/ui/useSupportDropdownClose"
 import { MarkTicketAsCompletedUser } from "../components/MarkTicketAsCompletedUser"
-import { useForm } from "react-hook-form"
 import { useMessagesStore } from "@/store/ui/useMessagesStore"
 import { useLoading } from "@/store/ui/useLoading"
 import { getPusherClient } from "@/libs/pusher"
@@ -28,15 +26,13 @@ export default function SupportButtonDropdown() {
   const bottomRef = useRef<HTMLUListElement>(null)
   const userStore = useUserStore()
   const userId = userStore.userId || getAnonymousId()
-  const senderUsername = userStore.username || userId
   const { ticketId, setTicketId } = useMessagesStore()
   const { isLoading } = useLoading()
   useLoadInitialMessages()
 
-  const { handleSubmit, register, reset, setFocus } = useForm<IFormDataMessage>()
   const { messages, setMessages } = useMessagesStore()
   useMarkMessagesAsSeen(isDropdown, ticketId, messages, userId, isLoading)
-  useScrollToBottom(setFocus, bottomRef, isDropdown)
+  useScrollToBottom(bottomRef, isDropdown)
 
   useEffect(() => {
     const pusherClient = getPusherClient()
@@ -91,22 +87,6 @@ export default function SupportButtonDropdown() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, ticketId, router])
 
-  function sendMessageFn(data: IFormDataMessage) {
-    sendMessage({
-      data,
-      reset,
-      messages,
-      ticketId,
-      userId,
-      senderUsername,
-      avatarUrl: userStore.avatarUrl,
-      router,
-      setMessages,
-      setTicketId,
-      bottomRef,
-    })
-  }
-
   return (
     <section className="h-[400px] mobile:h-[490px] w-[280px] mobile:w-[375px] flex flex-col justify-between">
       <div className="w-full shadow-md py-1 flex justify-end items-center px-2">
@@ -118,17 +98,13 @@ export default function SupportButtonDropdown() {
       {isLoading ? (
         <div>TODO - loading messages...</div>
       ) : (
-        <form
-          className="flex flex-col justify-between h-[calc(400px-56px)] mobile:h-[calc(490px-56px)]"
-          onSubmit={handleSubmit(sendMessageFn)}>
+        <form className="flex flex-col justify-between h-[calc(400px-56px)] mobile:h-[calc(490px-56px)]">
           <ul className="h-[280px] mobile:h-[370px] flex flex-col gap-y-2 hide-scrollbar p-4" ref={bottomRef}>
             {messages?.map(message => <MessageBox key={message.id} message={message} />)}
           </ul>
           <MessageInput
             //-2px because it don't calculate border-width 1px
             className="px-4 py-2 bg-foreground-accent shadow-md"
-            id="message"
-            register={register}
           />
         </form>
       )}

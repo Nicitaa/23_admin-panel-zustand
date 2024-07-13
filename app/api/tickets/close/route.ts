@@ -24,7 +24,8 @@ export async function POST(req: Request) {
 
   // 1. Update 'tickets' to is_open:false
   const { error } = await supabaseAdmin.from("tickets").update({ is_open: false }).eq("id", ticketId)
-  if (error) return NextResponse.json({ error: `Error in api/tickets/route.ts\n ${error.message}` }, { status: 400 })
+  if (error)
+    return NextResponse.json({ error: `Error in api/tickets/close/route.ts\n ${error.message}` }, { status: 400 })
 
   if (closedBy === "user") {
     // On user side - clear messages

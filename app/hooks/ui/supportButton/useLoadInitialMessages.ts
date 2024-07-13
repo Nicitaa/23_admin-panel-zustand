@@ -19,14 +19,14 @@ export function useLoadInitialMessages() {
             const ticketId = await fetchTicketId()
             if (!ticketId) return
             setTicketId(ticketId)
+            const response: TAPIMessagesGetMessagesResponse = await axios.post("/api/messages/get-messages", {
+              ticketId: ticketId,
+            } as TAPIMessagesGetMessagesRequest)
+            setMessages(response.data)
           } catch (error) {
             console.log(22, "error - ", error)
           }
         }
-        const response: TAPIMessagesGetMessagesResponse = await axios.post("/api/messages/get-messages", {
-          ticketId: ticketIdInStore,
-        } as TAPIMessagesGetMessagesRequest)
-        setMessages(response.data)
       }
       getInitialMessagesByTicketIdFn()
     } catch (error) {

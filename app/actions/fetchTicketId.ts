@@ -15,6 +15,7 @@ const fetchTicketIdCache = cache(async (userId: string) => {
 const fetchTicketId = async (): Promise<string | undefined> => {
   const userId = getUserId()
   if (!userId) return undefined
+  if (userId.includes("anonymousId")) return userId // ticket id its anonymous id (in case !isAuthenticated)
 
   try {
     // 1 user may have only 1 open ticket - that's why single()

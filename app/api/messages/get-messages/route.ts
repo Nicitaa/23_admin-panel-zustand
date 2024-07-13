@@ -18,6 +18,10 @@ export type TAPIMessagesGetMessagesResponse = AxiosResponse<Response>
 export async function POST(req: Request) {
   const { ticketId, userId } = (await req.json()) as TAPIMessagesGetMessagesRequest
 
+  if (!ticketId && !userId) {
+    throw new Error("Either ticketId or userId must be set")
+  }
+
   let ticketIdResponse: string | undefined = ticketId
 
   if (userId) {
@@ -30,6 +34,7 @@ export async function POST(req: Request) {
     ticketIdResponse = ticketId?.id
   }
   if (!ticketIdResponse) {
+    console.log(33, `no ticket with userId ${userId} - `, ticketIdResponse)
     return NextResponse.json([])
   }
 

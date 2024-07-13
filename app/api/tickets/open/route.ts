@@ -41,7 +41,8 @@ export async function POST(req: Request) {
     owner_username: ownerUsername,
     owner_avatar_url: ownerAvatarUrl,
   })
-  if (error) return NextResponse.json({ error: `Error in api/tickets/route.ts\n ${error.message}` }, { status: 400 })
+  if (error)
+    return NextResponse.json({ error: `Error in api/tickets/open/route.ts\n ${error.message}` }, { status: 400 })
 
   // 2. Trigger 'tickets:open' event in 'tickets' channel and pass required data
   await pusherServer.trigger("tickets", "tickets:open", {
