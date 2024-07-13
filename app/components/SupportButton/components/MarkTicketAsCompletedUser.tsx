@@ -13,7 +13,7 @@ import { Button } from "@/components/ui"
 import { useEffect, useState } from "react"
 import { useSupportDropdown } from "@/store/ui/supportDropdown"
 import { useRouter } from "next/navigation"
-import { pusherClient } from "@/libs/pusher"
+import { getPusherClient } from "@/libs/pusher"
 
 interface MarkTicketAsCompletedUserProps {
   ticketId: string | null // please don't set ticketId as empty string (I was so confused to undestand code)
@@ -85,6 +85,7 @@ export function MarkTicketAsCompletedUser({ ticketId, messagesLength }: MarkTick
 
   useEffect(() => {
     if (!ticketId) return
+    const pusherClient = getPusherClient()
     pusherClient.subscribe(ticketId)
 
     const closeBySupportHandler = () => {

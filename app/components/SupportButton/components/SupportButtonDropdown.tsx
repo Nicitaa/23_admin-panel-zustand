@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 
 import { IMessage } from "@/interfaces/support/IMessage"
-import { pusherClient } from "@/libs/pusher"
 import useUserStore from "@/store/user/userStore"
 
 import { MessageBox } from "../components/MessageBox"
@@ -20,6 +19,7 @@ import { MarkTicketAsCompletedUser } from "../components/MarkTicketAsCompletedUs
 import { useForm } from "react-hook-form"
 import { useMessagesStore } from "@/store/ui/useMessagesStore"
 import { useLoading } from "@/store/ui/useLoading"
+import { getPusherClient } from "@/libs/pusher"
 
 export default function SupportButtonDropdown() {
   const { isDropdown } = useSupportDropdownClose()
@@ -39,6 +39,7 @@ export default function SupportButtonDropdown() {
   useScrollToBottom(setFocus, bottomRef, isDropdown)
 
   useEffect(() => {
+    const pusherClient = getPusherClient()
     // I want to initialize connection with pusher only in case isDropdown and userId
     // because user may be not authenticated and that's why I set anonymousId when user send first message
     if (userId && isDropdown && ticketId) {

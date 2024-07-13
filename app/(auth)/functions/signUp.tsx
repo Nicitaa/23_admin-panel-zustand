@@ -1,12 +1,13 @@
-import { TAPIAuthRegister } from "@/api/auth/register/route"
-import axios, { AxiosError } from "axios"
 import { Dispatch, ReactNode, SetStateAction } from "react"
+import axios, { AxiosError } from "axios"
+
+import { TAPIAuthRegister } from "@/api/auth/register/route"
 import { AuthFormData } from "../AuthModal/AuthModal"
 import { UseFormGetValues, UseFormSetFocus } from "react-hook-form"
-import { pusherClient } from "@/libs/pusher"
 import { Timer } from "../AuthModal/components"
 import { Button } from "@/components/ui"
 import { resendVerificationEmail } from "./resendVerificationEmail"
+import { getPusherClient } from "@/libs/pusher"
 
 export async function signUp(
   username: string,
@@ -20,6 +21,8 @@ export async function signUp(
   setFocus: UseFormSetFocus<AuthFormData>,
 ) {
   try {
+    const pusherClient = getPusherClient()
+
     const signUpResponse = await axios
       .post("/api/auth/register", {
         username: username,

@@ -7,7 +7,7 @@ import { find } from "lodash"
 import { ITicket } from "@/interfaces/support/ITicket"
 import { UnseenMessages } from "@/actions/getUnreadMessages"
 import { useUnseenMessages } from "@/(support)/store/useUnseenMessages"
-import { pusherClient } from "@/libs/pusher"
+import { getPusherClient } from "@/libs/pusher"
 import useTicket from "@/hooks/support/useTicket"
 import { MobileSidebarTicket } from "./MobileSidebarTicket"
 import { useRouter } from "next/navigation"
@@ -33,6 +33,7 @@ export function MobileSidebar({ initialTickets, unseenMessages }: MobileSidebarP
   // TODO - go to /support/tickets on esc
 
   useEffect(() => {
+    const pusherClient = getPusherClient()
     pusherClient.subscribe("tickets")
 
     const newHandler = (ticket: ITicket) => {

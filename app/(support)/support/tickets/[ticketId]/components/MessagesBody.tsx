@@ -8,7 +8,7 @@ import { TAPIMessageSeen } from "@/api/message/seen/route"
 import { IMessage } from "@/interfaces/support/IMessage"
 import { useUnseenMessages } from "@/(support)/store/useUnseenMessages"
 import useUserStore from "@/store/user/userStore"
-import { pusherClient } from "@/libs/pusher"
+import { getPusherClient } from "@/libs/pusher"
 import { MessageBox } from "@/components/SupportButton/components/MessageBox"
 
 interface MessagesBodyProps {
@@ -32,6 +32,7 @@ export function MessagesBody({ initialMessages, ticket_id }: MessagesBodyProps) 
   }, [messages, ticket_id, userId])
 
   useEffect(() => {
+    const pusherClient = getPusherClient()
     pusherClient.subscribe(ticket_id)
 
     if (bottomRef.current) {

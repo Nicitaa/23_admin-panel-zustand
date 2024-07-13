@@ -1,8 +1,8 @@
-import { pusherClient } from "@/libs/pusher"
 import { useRouter } from "next/navigation"
 import { Dispatch, SetStateAction, useEffect } from "react"
 import { UseFormGetValues } from "react-hook-form"
 import { AuthFormData } from "../AuthModal/AuthModal"
+import { getPusherClient } from "@/libs/pusher"
 
 export const useAuthCompleted = (
   isAuthCompleted: boolean,
@@ -10,6 +10,7 @@ export const useAuthCompleted = (
   getValues: UseFormGetValues<AuthFormData>,
 ) => {
   const router = useRouter()
+   const pusherClient = getPusherClient()
 
   useEffect(() => {
     function authCompletedHandler() {
