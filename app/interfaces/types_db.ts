@@ -94,6 +94,27 @@ export type Database = {
           },
         ]
       }
+      stats: {
+        Row: {
+          clicks: number
+          created_at: string
+          id: string
+          utm_source: string
+        }
+        Insert: {
+          clicks?: number
+          created_at?: string
+          id?: string
+          utm_source: string
+        }
+        Update: {
+          clicks?: number
+          created_at?: string
+          id?: string
+          utm_source?: string
+        }
+        Relationships: []
+      }
       tickets: {
         Row: {
           created_at: string

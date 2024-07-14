@@ -3,9 +3,23 @@
 import { useEffect } from "react"
 
 import useDarkMode from "@/store/ui/darkModeStore"
+import { useSearchParams } from "next/navigation"
+import { utmSourceAction } from "@/actions/utmSourceAction"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const darkMode = useDarkMode()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const utm_source = searchParams.get("utm_source")
+    if (utm_source) {
+      async function utmSourceFn() {
+        await utmSourceAction(utm_source)
+      }
+      utmSourceFn()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   //children is a server component
   //more info - https://www.youtube.com/watch?v=9YuHTGAAyu0
