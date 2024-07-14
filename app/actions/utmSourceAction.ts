@@ -1,3 +1,5 @@
+"use server"
+
 import supabaseAdmin from "@/libs/supabase/supabaseAdmin"
 
 export async function utmSourceAction(utm_source: string) {
