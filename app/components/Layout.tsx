@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const utm_source = searchParams.get("utm_source")
+    const utm_source = searchParams?.get("utm_source")?.trimEnd() ?? ""
     if (utm_source) {
       async function utmSourceFn() {
         await utmSourceAction(utm_source)
