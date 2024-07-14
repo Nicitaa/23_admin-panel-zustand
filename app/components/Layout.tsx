@@ -3,12 +3,14 @@
 import { useEffect } from "react"
 
 import useDarkMode from "@/store/ui/darkModeStore"
-import { useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { utmSourceAction } from "@/actions/utmSourceAction"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const darkMode = useDarkMode()
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const path = usePathname()
 
   useEffect(() => {
     const utm_source = searchParams?.get("utm_source")?.trimEnd() ?? ""
@@ -17,6 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         await utmSourceAction(utm_source)
       }
       utmSourceFn()
+      router.replace(path)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
