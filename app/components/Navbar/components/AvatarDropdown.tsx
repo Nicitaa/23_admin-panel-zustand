@@ -5,6 +5,7 @@ import { BsWindow } from "react-icons/bs"
 import { TbWorld } from "react-icons/tb"
 import { FiPhoneCall } from "react-icons/fi"
 import { IoChatboxEllipsesOutline } from "react-icons/io5"
+import { IoIosStats } from "react-icons/io"
 
 import useUserStore from "@/store/user/userStore"
 import useDarkMode from "@/store/ui/darkModeStore"
@@ -65,6 +66,7 @@ export function AvatarDropdown({ role, avatarUrlServer }: AvatarDropdownProps) {
         href={contact.telegram}
         target="_blank"
       />
+      {role === "SUPPORT" && <DropdownItem label="Stats" icon={IoIosStats} href="/stats" />}
       <DropdownItem label="Change language" icon={TbWorld} onClick={openChangeLanguageModal} />
       <DropdownItem
         className="min-[501px]:hidden"
