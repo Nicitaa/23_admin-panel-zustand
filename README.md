@@ -16,7 +16,9 @@
 
 ### Performance - 74 mobile / 94 desktop (24.03.2024)
 
-![perf](https://i.imgur.com/B6EA55v.png)
+### Performance - 65 mobile / 99 desktop [(15.07.2024)](https://pagespeed.web.dev/analysis/https-23-store-vercel-app/3fq2wnx6g5?form_factor=mobile)
+
+![perf](https://i.imgur.com/IAIfXUb.png)
 
 ### Stack - Next + TypeScript + Tailwind + supabase + zustand + stripe
 
