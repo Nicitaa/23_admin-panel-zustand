@@ -101,7 +101,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${requestUrl.origin}/error?error_description=${error_description}`)
     }
   } else {
-    // TODO - create image on error page for this case
+    
     const error_description = encodeURIComponent("No code found to exchange cookies for session")
     return NextResponse.redirect(`${requestUrl.origin}/error?error_description=${error_description}`)
   }

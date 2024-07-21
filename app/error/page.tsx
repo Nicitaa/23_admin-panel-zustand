@@ -6,6 +6,7 @@ import { EmailLinkInvalidOrExpired } from "./EmailLinkInvalidOrExpired"
 import { ExchangeCookiesError } from "./ExchangeCookiesError"
 import { AuthNotCompleted } from "./AuthNotCompleted"
 import { BackToMainButton } from "./components/BackToMainButton"
+import { NoCodeFoundError } from "./NoCodeFoundError"
 
 export default function Error() {
   const error_description = useSearchParams()?.get("error_description")
@@ -18,6 +19,9 @@ export default function Error() {
   }
   if (error_description === "No user found after exchanging cookies for recovering") {
     return <ExchangeCookiesError message="No user found after exchanging cookies for recovering" />
+  }
+  if (error_description === "No code found to exchange cookies for session") {
+    return <NoCodeFoundError message="No user found after exchanging cookies for recovering" />
   }
   if (error_description === "You have no access to this route - your auth not completed") {
     return <AuthNotCompleted />
