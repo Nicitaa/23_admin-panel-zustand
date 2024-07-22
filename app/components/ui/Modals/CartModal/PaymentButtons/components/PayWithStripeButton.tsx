@@ -9,11 +9,13 @@ import useToast from "@/store/ui/useToast"
 import useCartStore from "@/store/user/cartStore"
 import { useLoading } from "@/store/ui/useLoading"
 import { twMerge } from "tailwind-merge"
+import useUserStore from "@/store/user/userStore"
 
 export function PayWithStripeButton() {
   const router = useRouter()
   const toast = useToast()
   const cartStore = useCartStore()
+  const { email } = useUserStore()
   const { isLoading, setIsLoading } = useLoading()
 
   const stripeProductsQuery = cartStore.productsData
@@ -29,7 +31,7 @@ export function PayWithStripeButton() {
     setIsLoading(true)
     try {
       if (cartStore.getProductsPrice() > 999999) {
-        return toast.show(
+        toast.show(
           "error",
           "Stripe restrictions",
           <p>
@@ -38,16 +40,18 @@ export function PayWithStripeButton() {
           </p>,
           10000,
         )
+      } else {
+        const stripeResponse = await axios.post("/api/create-checkout-session", { stripeProductsQuery, email })
+        //redirect user to session.url on client side to avoid 'blocked by CORS' error
+        router.push(stripeResponse.data)
       }
-      const stripeResponse = await axios.post("/api/create-checkout-session", { stripeProductsQuery })
-      //redirect user to session.url on client side to avoid 'blocked by CORS' error
-      router.push(stripeResponse.data)
     } catch (error) {
       if (error instanceof Error) {
         toast.show("error", "Error creating stripe session", error.message)
       }
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (

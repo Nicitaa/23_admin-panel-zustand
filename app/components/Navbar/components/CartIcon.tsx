@@ -3,22 +3,35 @@
 import useCartStore from "@/store/user/cartStore"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 
 import { LuShoppingCart } from "react-icons/lu"
 
-export function CartIcon() {
+interface CartIconProps {
+  cart_quantity: number | undefined
+  userId: string | undefined | null
+}
+
+export function CartIcon({ cart_quantity, userId }: CartIconProps) {
   const pathname = usePathname()
   const updatedPath = pathname + (pathname?.includes("?") ? "&" : "?") + "modal=" + "CartModal"
   const cartStore = useCartStore()
+  const [hasMounted, setHasMounted] = useState(false)
+
+  // show SSR content then once SSR finished - show cartQuantity from cartStore (for interactability)
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   const cartQuantity = cartStore.getCartQuantity()
 
+  // If SSR finished show cartQuantity otherwise if user isAuthenticated show fetched cart_quantity otherwise from localstorage
   return (
     <Link
       className={`mr-1 cursor-pointer text-title transition-all duration-300
         before:absolute before:w-[20px] before:h-[20px] before:bg-brand before:rounded-full before:text-title-foreground
         before:translate-x-[80%] before:translate-y-[-20%] before:z-[9] ${
-          cartQuantity === 0 ? "before:hidden" : "before:flex"
+          (hasMounted ? cartQuantity : userId ? cart_quantity : cartQuantity) === 0 ? "before:hidden" : "before:flex"
         }`}
       href={updatedPath}
       aria-label="cart">
@@ -26,8 +39,9 @@ export function CartIcon() {
       <div
         className={`absolute min-w-[20px] translate-x-[80%] translate-y-[-175%] laptop:translate-y-[-155%]
           flex justify-center text-center text-title-foreground 
-          text-[12px] laptop:text-[14px] z-[9] ${cartQuantity === 0 ? "hidden" : "flex"}`}>
-        {cartQuantity}
+          text-[12px] laptop:text-[14px] z-[9] ${(hasMounted ? cartQuantity : userId ? cart_quantity : cartQuantity) === 0 ? "hidden" : "flex"}`}>
+        {/* If !isAuthenticated - show state from localstorage */}
+        {hasMounted ? cartQuantity : userId ? cart_quantity : cartQuantity}
       </div>
     </Link>
   )

@@ -30,6 +30,8 @@ declare global {
 
       NEXT_TELEGRAM_BOT_TOKEN: string
       NEXT_TELEGRAM_CHAT_ID: string
+
+      NEXT_PUBLIC_IS_DEBUG: string
     }
   }
 }

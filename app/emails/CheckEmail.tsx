@@ -63,9 +63,7 @@ export const CheckEmail = ({ products, deliveryDate }: CheckEmailProps) => {
                 products.map((product, index) => (
                   <Section
                     // Show border and mb-2 only for not last products
-                    className={twMerge(
-                      index !== products.length - 1 && "border-b border-solid border-border-color mb-2",
-                    )}
+                    className={twMerge(index !== products.length - 1 && "border-b border-border-color mb-2")}
                     key={product.id}>
                     <Img
                       style={{ objectFit: "cover" }}
@@ -78,7 +76,7 @@ export const CheckEmail = ({ products, deliveryDate }: CheckEmailProps) => {
                     <Text className="mb-8 mt-0 text-title text-xl text-center">{formatCurrency(product.price)}</Text>
                     <Text className="m-0 text-title text-lg text-center">
                       Quantity:
-                      <span className="m-0 text-subTitle">{product.quantity}</span>{" "}
+                      <span className="m-0 text-subTitle">{product.quantity}</span>
                     </Text>
                     <Text className="m-0 text-title text-lg text-center">
                       Sub-total:

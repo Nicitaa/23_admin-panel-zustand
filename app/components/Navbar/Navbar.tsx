@@ -8,11 +8,24 @@ import { AvatarDropdown, HamburgerMenu, Logo, NavbarSearch, OpenAuthModalButton,
 import { CtrlKBadge } from "./components/CtrlKBadge"
 import { ContactButton } from "./components/ContactButton"
 import { getCookie } from "@/utils/helpersSSR"
+import { TRecordCartProduct } from "@/interfaces/product/TRecordCartProduct"
 
 export default async function Navbar() {
   const {
     data: { user },
   } = await supabaseServer().auth.getUser()
+
+  const cart_products_response = await supabaseServer().from("users_cart").select("cart_products").single()
+  const cart_products = cart_products_response.data?.cart_products as unknown as TRecordCartProduct
+
+  let cart_quantity = 0
+
+  if (cart_products)
+    cart_quantity = Object.keys(cart_products).reduce((accum, current) => {
+      const { quantity } = cart_products[current]
+      accum += quantity
+      return accum
+    }, 0)
 
   let role = "USER"
   if (user && user.id) {
@@ -47,7 +60,7 @@ export default async function Navbar() {
       <div className="flex flex-row gap-x-2 items-center ">
         <SwitchDarkMode className="max-[500px]:hidden" />
         <BiSearchAlt className="flex tablet:hidden" size={28} />
-        <CartIcon />
+        <CartIcon userId={user?.id} cart_quantity={cart_quantity} />
         <ContactButton />
         {user ? <AvatarDropdown role={role} avatarUrlServer={avatarUrl} /> : <OpenAuthModalButton />}
       </div>

@@ -1,16 +1,22 @@
 "use client"
 
-import useToast from "@/store/ui/useToast"
+import { Suspense, lazy } from "react"
 import { AnimatePresence } from "framer-motion"
+import useToast from "@/store/ui/useToast"
 
-const Toast = async () => {
-  const toast = import("@/components/ui/Toast")
-  const { Toast } = await toast
-  return <Toast />
-}
+const LazyToast = lazy(() => import("@/components/ui/Toast"))
 
 export default function ToastProvider() {
   const toast = useToast()
-
-  return <AnimatePresence>{toast.isOpen && <Toast />}</AnimatePresence>
+  // Don't use async here to avoid error "async/await allowed in Server components only"
+  return (
+    <AnimatePresence>
+      {toast.isOpen && (
+        // Suspence required to handle fallback state
+        <Suspense fallback={null}>
+          <LazyToast />
+        </Suspense>
+      )}
+    </AnimatePresence>
+  )
 }

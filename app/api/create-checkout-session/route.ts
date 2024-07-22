@@ -6,10 +6,11 @@ import { getURL } from "@/utils/helpers"
 type stripeProductType = {
   price: string
   quantity: number
+  email?: string
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as { stripeProductsQuery: string }
+  const body = (await request.json()) as { stripeProductsQuery: string; email: string | undefined }
 
   try {
     // Decoding url to get json from this %7B%22price%22%3A%22price_1O8TYeDEq5VtEmnoi7r1D4Gs%22%2C%22quantity%22%3A1%7D
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
       billing_address_collection: "required",
       line_items: productsJsonArray,
       mode: "payment",
+      customer_email: body.email,
       success_url: `${getURL()}payment/?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${getURL()}payment/?status=canceled`,
       shipping_address_collection: {

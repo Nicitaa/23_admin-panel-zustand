@@ -5,6 +5,7 @@ import { getStorage } from "@/utils/getStorage"
 import supabaseClient from "@/libs/supabase/supabaseClient"
 import { TProductAfterDB } from "@/interfaces/product/TProductAfterDB"
 import useUserStore from "./userStore"
+import { logFn } from "@/utils/logFn"
 
 interface CartStore {
   products: TRecordCartProduct
@@ -31,6 +32,7 @@ const cartStore = (set: SetState, get: GetState): CartStore => ({
     const products = get().products
     // fetch products data only if some products in cart
     // otherwise everytime I fetch data I neeed to check is some products in reacord to featch
+    logFn("products - ", products)
     if (products && Object.values(products).length !== 0) {
       const keepExistingProductsRecord = get().keepExistingProductsRecord
       const productsRecord = get().products
@@ -176,6 +178,7 @@ const cartStore = (set: SetState, get: GetState): CartStore => ({
   },
   async initialize() {
     if (typeof window === "undefined") return
+
     const keepExistingProductsRecord = get().keepExistingProductsRecord
     const storage = getStorage()
     const products = await storage.getProducts() // get products from localstorage or DB based on isAuthenticated

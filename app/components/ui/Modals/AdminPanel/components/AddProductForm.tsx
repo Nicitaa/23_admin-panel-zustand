@@ -111,6 +111,21 @@ export function AddProductForm() {
     formState: { errors },
   } = useForm<IFormDataAddProduct>()
 
+  const showToastWarning = (errors: ErrorsType) => {
+    if (errors?.maxFileSize) {
+      toast.show(
+        "error",
+        errors?.maxFileSize ? "Max file size is 0.5MB" : errors.resolution ? "Minimum 1000x500 image" : "warning",
+        errors?.maxFileSize
+          ? "Please reduce size of image to < 0.5 MB - https://www.reduceimages.com/"
+          : errors.resolution
+            ? "Please use high quality images"
+            : "unknown warning - please check code in UploadIngredientImage.tsx",
+      )
+    }
+    console.log(124, "errors - ", errors)
+  }
+
   const onSubmit = (data: IFormDataAddProduct) => {
     createProduct(images, data.title, data.subTitle, data.price, data.onStock)
   }
@@ -121,11 +136,11 @@ export function AddProductForm() {
         multiple
         value={images}
         onChange={onChange}
-        resolutionWidth={1000}
-        resolutionHeight={500}
+        resolutionWidth={1000} // minimum 1000 width
+        resolutionHeight={500} // minimum 500 height
         resolutionType="more"
         dataURLKey="data_url"
-        onError={() => toast.show("error")}>
+        onError={errors => showToastWarning(errors)}>
         {({
           imageList,
           onImageUpload,

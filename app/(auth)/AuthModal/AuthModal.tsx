@@ -1,17 +1,12 @@
 "use client"
 
-import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 import { useForm } from "react-hook-form"
-import { AiOutlineUser, AiOutlineMail, AiOutlineLock } from "react-icons/ai"
 import { twMerge } from "tailwind-merge"
 
-import { FormInput } from "../../components/ui/Inputs/Validation/FormInput"
-import { Button, Checkbox } from "../../components/ui"
-import { ContinueWithButton } from "@/(auth)/AuthModal/components"
 import { ModalQueryContainer } from "@/components/ui/Modals/ModalContainers"
 import { signUp } from "../functions/signUp"
 import { resetPassword } from "../functions/resetPassword"

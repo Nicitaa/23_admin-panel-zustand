@@ -9,7 +9,6 @@ export const useIsActiveTab = () => {
     if (isActiveRef.current !== isActive) {
       isActiveRef.current = isActive
       setTrigger(prev => !prev) // Toggle the trigger to force a re-render
-      console.log("Tab Active State Changed:", isActive) // Single console log for monitoring
     }
   }
 

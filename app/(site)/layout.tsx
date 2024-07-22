@@ -2,6 +2,7 @@ import { lazy } from "react"
 import { Metadata } from "next"
 
 import Navbar from "@/components/Navbar/Navbar"
+import supabaseServer from "@/libs/supabase/supabaseServer"
 
 export const metadata: Metadata = {
   title: "23_store - products",

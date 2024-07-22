@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import useToast from "@/store/ui/useToast"
 import { Button } from "."
 
-export function Toast() {
+export default function Toast() {
   const { error, success, subTitle, title } = useToast()
 
   return (
