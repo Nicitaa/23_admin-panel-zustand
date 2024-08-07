@@ -41,7 +41,7 @@ If you are new to `react-email` and `resend` - check guides on YouTube how to se
 </Section>
 ```
 
-To make it flex-row write in body like (when I did like so I had flex-row)
+### To make it flex-row write in body like (when I did like so I had flex-row)
 
 ```tsx
   <Body className="bg-[#202020]">
