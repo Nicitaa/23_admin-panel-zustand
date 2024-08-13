@@ -12,6 +12,16 @@ import { useRouter } from "next/navigation"
 import useToast, { MessageStore } from "@/store/ui/useToast"
 import { useLoading } from "@/store/ui/useLoading"
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime"
+import {
+  Connection as SolanaConnection,
+  PublicKey,
+  Transaction as SolanaTransaction,
+  SystemProgram,
+  sendAndConfirmTransaction,
+  Connection,
+  Transaction,
+  Keypair,
+} from "@solana/web3.js"
 
 interface FormData {
   username: string
@@ -20,6 +30,8 @@ interface FormData {
   password: string
 }
 
+const getPublicKey = (wallet: TWallet) => new PublicKey(wallet.accounts[0])
+
 export const sendMoneyWithMetamask = async (
   productsPrice: number,
   wallet: TWallet,
@@ -27,49 +39,124 @@ export const sendMoneyWithMetamask = async (
   toast: MessageStore,
   setIsLoading: (isLoading: boolean) => void,
 ) => {
-  // TODO - now user may change abount of sending money and get no info about payment - send check and block way to change amount of sending money
+  setIsLoading(true)
+
   try {
+    // Check the current network
+    const chainId = await window.ethereum.request({ method: "eth_chainId" })
+
+    // Define relevant chain IDs and their corresponding tokens
+    const ETH_MAINNET = "0x1" // Ethereum Mainnet
+    const POLYGON = "0x89" // Polygon
+    const BNB_SMART_CHAIN = "0x38" // Binance Smart Chain Mainnet
+    const SOLANA = "0x1" // Solana (Placeholder)
+
+    let chainToken: string
+
+    // Determine the appropriate chainToken based on the chainId
+    switch (chainId) {
+      case ETH_MAINNET:
+        chainToken = "ETH"
+        break
+      case POLYGON:
+        chainToken = "MATIC"
+        break
+      case BNB_SMART_CHAIN:
+        chainToken = "BNB"
+        break
+      case SOLANA:
+        chainToken = "SOL"
+        break
+      default:
+        toast.show(
+          "error",
+          "Unsupported network",
+          "Please switch to Ethereum Mainnet, Polygon, BNB Smart Chain, or Solana.",
+        )
+        setIsLoading(false)
+        return
+    }
+
+    // Proceed to get price conversion for the specific token
     const response: TAPICoinmarketcapResponse = await axios.post(`${location.origin}/api/coinmarketcap`, {
       amount: productsPrice,
       symbol: "USD",
-      convert: "ETH",
+      convert: chainToken,
     })
-    console.log("API Response:", response.data)
 
-    // its productsPrice / ETHPrice
-    const ETHPrice = response.data.data[0].quote.ETH.price
+    // Check if the token price is available
+    const tokenPrice = response.data.data[0].quote[chainToken]?.price
+    if (!tokenPrice) {
+      toast.show("error", "Failed to retrieve token price", "Please try again later.")
+      setIsLoading(false)
+      return
+    }
 
-    // Convert ETH to Wei
-    const amountInWei = BigInt(Math.round(ETHPrice * 10 ** 18)) // Correcting to use * 10^18
-    const amountInWeiHex = amountInWei.toString(16).padStart(64, "0") // Ensure it's 64 characters
+    // Amount to send in the respective token's smallest unit
+    const amountInTokenUnits = BigInt(Math.round(tokenPrice * 10 ** 18)) // For ETH/BSC/POLYGON, adjust later for SOL
 
-    console.log("amountInWeiHex - ", amountInWeiHex) // Log to check the output
+    if (chainToken === "SOL") {
+      // Create a Solana connection
+      const solanaConnection = new SolanaConnection("https://api.mainnet-beta.solana.com", "confirmed")
 
-    window.ethereum
-      .request({
-        method: "eth_sendTransaction",
-        params: [
-          {
-            from: wallet.accounts[0],
-            to: process.env.NEXT_PUBLIC_METAMASK_ADRESS,
-            gasLimit: "0x5028",
-            maxPriorityFeePerGas: "0x3b9aca00",
-            maxFeePerGas: "0x2540be400",
-            value: `0x${amountInWeiHex}`,
-          },
-        ],
-      })
-      .then((txHash: string) => {
-        router.push(`${location.origin}/payment?status=success`)
-        //TODO - add this txHash to query params when I check is payment with metamask is actually work
-        console.log(169, "You may use txHash as check QR code or payment identifier - ", txHash)
-      })
-      .catch((error: Error) => {
-        error.message.includes("MetaMask Tx Signature: User denied transaction signature.")
-          ? toast.show("error", "Transaction error", "User denied transaction signature")
-          : toast.show("error", "Unknown error", error.message)
+      // Ensure wallet.secret exists and is of correct type
+      if (!wallet.secret) {
+        toast.show(
+          "error",
+          "Wallet secret not available",
+          "Failed to sign the transaction because the secret key is missing.",
+        )
         setIsLoading(false)
-      })
+        return
+      }
+
+      // Use the secret key for the signer
+      const sender = Keypair.fromSecretKey(Uint8Array.from(wallet.secret))
+
+      const solanaTransaction = new SolanaTransaction().add(
+        SystemProgram.transfer({
+          fromPubkey: sender.publicKey,
+          toPubkey: new PublicKey(process.env.NEXT_PUBLIC_METAMASK_ADRESS),
+          lamports: Number(amountInTokenUnits) / 10 ** 9,
+        }),
+      )
+
+      // Send transaction using the Solana wallet
+      const signature = await sendAndConfirmTransaction(solanaConnection, solanaTransaction, [sender])
+
+      console.log("Transaction successful with signature:", signature)
+      router.push(`${location.origin}/payment?status=success`)
+    } else {
+      // For Ethereum, BNB Smart Chain, and Polygon
+      const amountInWeiHex = amountInTokenUnits.toString(16).padStart(64, "0")
+
+      window.ethereum
+        .request({
+          method: "eth_sendTransaction",
+          params: [
+            {
+              from: wallet.accounts[0],
+              to: process.env.NEXT_PUBLIC_METAMASK_ADRESS,
+              gasLimit: "0x5028",
+              maxPriorityFeePerGas: "0x3b9aca00",
+              maxFeePerGas: "0x2540be400",
+              value: `0x${amountInWeiHex}`,
+            },
+          ],
+        })
+        .then((txHash: string) => {
+          router.push(`${location.origin}/payment?status=success`)
+          console.log("You may use txHash as check QR code or payment identifier - ", txHash)
+        })
+        .catch((error: Error) => {
+          if (error.message.includes("MetaMask Tx Signature: User denied transaction signature.")) {
+            toast.show("error", "Transaction error", "User denied transaction signature")
+          } else {
+            toast.show("error", "Unknown error", error.message)
+          }
+          setIsLoading(false)
+        })
+    }
   } catch (error: any) {
     toast.show("error", "Failed to pay with metamask", error.message as string)
     setIsLoading(false)

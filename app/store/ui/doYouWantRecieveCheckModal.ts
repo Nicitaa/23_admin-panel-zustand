@@ -4,6 +4,7 @@ export type TWallet = {
   accounts: never[]
   balance: string
   chainId: string
+  secret?: number[]
 }
 
 type DoYouWantRecieveCheckModalStore = {
