@@ -34,7 +34,17 @@ export const sendMoneyWithMetamask = async (
       symbol: "USD",
       convert: "ETH",
     })
+    console.log("API Response:", response.data)
+
+    // its productsPrice / ETHPrice
     const ETHPrice = response.data.data[0].quote.ETH.price
+
+    // Convert ETH to Wei
+    const amountInWei = BigInt(Math.round(ETHPrice * 10 ** 18)) // Correcting to use * 10^18
+    const amountInWeiHex = amountInWei.toString(16).padStart(64, "0") // Ensure it's 64 characters
+
+    console.log("amountInWeiHex - ", amountInWeiHex) // Log to check the output
+
     window.ethereum
       .request({
         method: "eth_sendTransaction",
@@ -45,7 +55,7 @@ export const sendMoneyWithMetamask = async (
             gasLimit: "0x5028",
             maxPriorityFeePerGas: "0x3b9aca00",
             maxFeePerGas: "0x2540be400",
-            value: BigInt(Math.floor(ETHPrice * 10 ** 18)).toString(16),
+            value: `0x${amountInWeiHex}`,
           },
         ],
       })

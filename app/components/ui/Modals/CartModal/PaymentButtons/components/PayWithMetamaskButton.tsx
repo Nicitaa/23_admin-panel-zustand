@@ -77,7 +77,6 @@ export function PayWithMetamaskButton() {
   }
 
   async function sendMoneyWithMetamaskFunction() {
-    console.log(80)
     setIsLoading(true)
     !isAuthenticated
       ? openDoYouWantRecieveCheckModal()
